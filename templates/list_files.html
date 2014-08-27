@@ -1,0 +1,156 @@
+$def with (data)
+
+
+$code:
+    time = data['modules']['time']
+    round = data['modules']['round']
+
+    pcs = data['pcs']
+    quota = data['quota']
+    quota_ratio = (1.0*quota['used'])/quota['total']
+
+    def filetype(f):
+        if f['category'] == 1:
+           return '<span class="label label-default">视频</span>'
+        elif f['category'] == 2:
+           return '<span class="label label-default">音频</span>'
+        elif f['category'] == 3:
+           return '<span class="label label-primary">文件</span>'
+        elif f['category'] == 4:
+           return '<span class="label label-info">文档</span>'
+        elif f['category'] == 5:
+           return '<span class="label label-default">安装文件</span>'
+        elif f['category'] == 6 and f['isdir'] == 1:
+           return '<span class="label label-danger">文件夹</span>'
+        elif f['category'] == 6 and f['isdir'] == 0:
+           return '<span class="label label-success">压缩文件</span>'
+        elif f['category'] == 7:
+           return '<span class="label label-warning">种子</span>'
+
+    def gen_download_url(f):
+        pcsobj = data['pcsobj']
+        if f['isdir'] == 1:
+            return '<a href="/file/%s" class="button">%s</a>' % ((f['server_filename']+u'/', f['server_filename']))
+        else:
+            return '<a href="/download%s" class="button">%s</a>' % (f['path'], f['server_filename'])
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>百度网盘</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap theme -->
+    <link href="/css/bootstrap-theme.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/theme.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body role="document">
+    <div class="container">
+          <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#">网盘</a></li>
+            <li role="presentation"><a href="#">离线下载</a></li>
+            <li role="presentation"><a data-toggle="modal" href="#about" data-target="#about">关于</a></li>
+          </ul>
+
+    </div>
+    
+    <!-- main -->
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel panel-default">
+            <div class="panel-body">
+            剩余空间
+              <div class="progress">
+                <div class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="$(quota_ratio*100)" aria-valuemin="0" aria-valuemax="100" style="width: $(quota_ratio*100)%;"><span class="sr-only">$quota_ratio Complete</span> $(quota['used']/(1024*1024))/$(quota['total']/(1024*1024))</div>
+              </div>
+            <div class="panel-body">
+            当前目录文件数目: <span class="label label-primary">$len(pcs)</span>
+            </div>
+            </div>
+          </div>
+         </div>
+       </div>
+    </div>
+    
+    <div class="container">  
+    <div class="row">
+        <div class="col-md-12">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>文件名</th>
+                <th>类型</th>
+                <th>大小</th>
+                <th>修改日期</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr>
+                  <td><a href="../" class="button">../</a></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+            $for entry in pcs:
+                <tr>
+                  <td>$:gen_download_url(entry)</td>
+                  <td>$:filetype(entry)</td>
+                  $if entry['isdir'] == 0:
+                      <td>$round(((1.0*entry['size'])/(1024*1024)), 3) MB</td>
+                  $else:
+                      <td></td>
+                  <td>$time.strftime('%Y-%m-%d %H:%M:%S',time.gmtime(entry['server_mtime']))</td>
+                </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div id="about" class="modal fade in" aria-hidden="false" style="display: none; ">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <a class="close" data-dismiss="modal">×</a>
+                <h3>关于</h3>
+                </div>
+
+                <div class="modal-body">
+                <h4>这是一个使用 python 写的百度网盘的代理</h4>
+                <p>使用到的库:</p>
+                    <a href="http://github.com/ly0/baidupcsapi" class="button">baidupcsapi</a> <br>   
+                    <a href="http://www.webpy.org" class="button">web.py</a> <br>       
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+  </body>
+</html>
