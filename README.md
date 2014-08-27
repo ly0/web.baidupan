@@ -10,5 +10,5 @@ web.baidupan
 `python launcher.py`
 
 依赖: <br>
-[baidupcsapi](http://github.com/ly0/baidupcsapi)
+[baidupcsapi](http://github.com/ly0/baidupcsapi) (其他依赖在这个库里了)<br>
 [web.py](http://webpy.org)
