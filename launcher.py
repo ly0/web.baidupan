@@ -63,7 +63,7 @@ class Resource:
 class Download:
     def GET(self, *args):
         path = '/' + '/'.join(args)
-        return pcs.download_url(path)
+        return webself.redirect(pcs.download_url(path)[0])
 
 if __name__ == "__main__":
     app = web.application(urls, globals())
