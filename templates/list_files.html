@@ -4,6 +4,7 @@ $def with (data)
 $code:
     time = data['modules']['time']
     round = data['modules']['round']
+    ctx = data['modules']['web.ctx']
 
     pcs = data['pcs']
     quota = data['quota']
@@ -32,7 +33,7 @@ $code:
         if f['isdir'] == 1:
             return '<a href="/file/%s" class="button">%s</a>' % ((f['server_filename']+u'/', f['server_filename']))
         else:
-            return '<a href="/download%s" class="button">%s</a>' % (f['path'], f['server_filename'])
+            return '<a href="#download_url" class="button url_link" path="%s">%s</a>' % (f['path'], f['server_filename'])
 
 
 <!DOCTYPE html>
@@ -45,13 +46,35 @@ $code:
     <meta name="author" content="">
     <title>百度网盘</title>
 
-    <!-- Bootstrap core CSS -->
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap theme -->
-    <link href="/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css">
 
-    <!-- Custom styles for this template -->
-    <link href="/css/theme.css" rel="stylesheet">
+    <style>
+      body {
+        padding-top: 70px;
+        padding-bottom: 30px;
+      }
+
+      .theme-dropdown .dropdown-menu {
+        position: static;
+        display: block;
+        margin-bottom: 20px;
+      }
+
+      .theme-showcase > p > .btn {
+        margin: 5px 0;
+      }
+
+      .theme-showcase .navbar .container {
+        width: auto;
+      }
+      
+      #download_url
+      {
+        white-space:normal;
+        word-break:break-all;
+        word-wrap:break-word;
+      }
+    </style>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -61,6 +84,51 @@ $code:
   </head>
 
   <body role="document">
+    <div class="container">
+        <div class="row">
+        $if 'WindowsBaiduYunGuanJia' not in ctx.env['HTTP_USER_AGENT']:
+            <div class="alert alert-warning">
+            您目前的 User-agent 为 <br>
+            <span class="label label-default">$ctx.env['HTTP_USER_AGENT']</span><br>
+            为了可以使用本工具, 您需要修改您浏览器的 user-agent 为
+            <span class="label label-success">$ctx.env['HTTP_USER_AGENT'] WindowsBaiduYunGuanJia</span><p></p>
+            <p><h4><span class="label label-primary">一般像IDM, 迅雷等工具都支持继承浏览器的 user-agent 所以等下载工具截获或者自己在下载工具里设置 user-agent 就好</span></h4></p>
+                修改方法:<br>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Chrome</h3>
+                    </div>
+                    <div class="panel-body">
+                        <ol>
+                          <li>在 Chrome 插件中心中下载 <a class="button" href="https://chrome.google.com/webstore/detail/user-agent-switcher/ffhkkpnppgnfaobgihpdblnhmmbodake?hl=en-US">User-Agent Switcher</a> 插件</li>
+                          <li>按照 Option-> New User-Agent(注意当前的分组), Name任意写, User-Agent填<br><span class="label label-success">$ctx.env['HTTP_USER_AGENT'] WindowsBaiduYunGuanJia</span></li>
+                        </ol>
+                    </div>
+                </div>
+               <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Firefox</h3>
+                    </div>
+                    <div class="panel-body">
+                        <ol>
+                          <li>在地址栏输入 <span class="label label-info">about:config</span></li>
+                          <li>搜索关键词 <span class="label label-info">general.useragent.override</span>,如果没有则<span class="label label-info">鼠标右键</span>-><span class="label label-info">新建(New)</span>-><span class="label label-info">字符串(String)</span>, 名字是 <span class="label label-info">general.useragent.override</span>, 内容是 <br><span class="label label-success">$ctx.env['HTTP_USER_AGENT'] WindowsBaiduYunGuanJia</span></li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="alert alert-danger">IE, 搜狗浏览器, 360浏览器, 腾讯浏览器等用户请您安装原版的Chrome或者Firefox然后再参考上面的过程.</div>
+        $if 'Linux' in ctx.env['HTTP_USER_AGENT'] or 'linux' in ctx.env['HTTP_USER_AGENT']:
+            <div class="alert alert-success">
+            感谢您使用 Linux, 主动与普通用户保持距离, 上面的对您来说都是扯蛋<br>
+            <span class="label label-danger">复制下载链接</span> -> 指定下载工具的 User-agent 为 <span class="label label-info">WindowsBaiduYunGuanJia</span> 或在 <span class="label label-info">HTTP 头</span> 里指定 <span class="label label-info">user-agent: WindowsBaiduYunGuanJia</span><br>
+            例如在 <span class="label label-info">wget</span> 或 <span class="label label-info">aria2c</span> 中指定参数<br>
+            <span class="label label-success">--user-agent WindowsBaiduYunGuanJia</span> <br>
+            或者 <span class="label label-info">axel</span> 中指定<br>
+            <span class="label label-success">-H "user-agent: WindowsBaiduYunGuanJia"</span>
+            </div>
+            </div>
+        </div>
+    </div>
     <div class="container">
           <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active"><a href="#">网盘</a></li>
@@ -72,6 +140,7 @@ $code:
     
     <!-- main -->
     <div class="container">
+
       <div class="row">
         <div class="col-md-12">
           <div class="panel panel-default">
@@ -143,14 +212,53 @@ $code:
             </div>
         </div>
     </div>
-
+    <div id="download_url" class="modal fade in" aria-hidden="false" style="display: none; ">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <a class="close" data-dismiss="modal">×</a>
+                <h3>下载地址</h3>
+                </div>
+                <div class="modal-body">
+                <div class="width:80%;" id="file_url"></div> 
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="url_close">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
     </div> <!-- /container -->
 
+    <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+    <script src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+   <script>
+    function get_real_url(path)
+    {
+        $$("#file_url").html("正在获取, 请稍后.");
+        $$.ajax(
+          {
+            url: "/download/" + path + "/",
+            type: "GET",
+            success: function(ajax) {
+              $$("#file_url").html(ajax);
+            },
+            error: function(ajax) {
+              $$("#file_url").html("获取失败,请重试");
+            }
+          });
 
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
+        $$("#download_url").attr("style", "display: block;");
+
+    }
+    $$(".url_link").click(function()
+    {
+      get_real_url($$(this).attr("path"));
+    })
+    $$('#url_close').click(function()
+    {
+      $$("#download_url").attr("style", "display: none;");
+    })
+    </script>
   </body>
 </html>

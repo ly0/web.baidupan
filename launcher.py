@@ -10,8 +10,7 @@ from baidupcsapi import *
 
 urls = (
     '/', 'Index',
-    '/(js)/(.*)', 'Resource',
-    '/(css)/(.*)', 'Resource',
+    '/static/(.*)', 'Resource',
     '/download/(.*)', 'Download',
     '/file/(.*)', 'File'
 )
@@ -31,7 +30,8 @@ class Index:
                 'quota': json.loads(pcs.quota().content),
                 'pcsobj': pcs,
                 'modules': {'time': time,
-                            'round': round}
+                            'round': round,
+                            'web.ctx': web.ctx}
                 }
         return render.list_files(data=data)
 
@@ -51,7 +51,7 @@ class File:
 
 class Resource:
     def GET(self, *args):
-        path = os.path.join('./static', '/'.join(args))
+        path = os.path.join('static', '/'.join(args))
         if not os.path.exists(path):
             return web.notfound('Resource not found.')
 
@@ -63,7 +63,7 @@ class Resource:
 class Download:
     def GET(self, *args):
         path = '/' + '/'.join(args)
-        return webself.redirect(pcs.download_url(path)[0])
+        return web.redirect(pcs.download_url(path)[0])
 
 if __name__ == "__main__":
     app = web.application(urls, globals())
