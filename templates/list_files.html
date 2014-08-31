@@ -16,7 +16,7 @@ $code:
         elif f['category'] == 2:
            return '<span class="label label-default">音频</span>'
         elif f['category'] == 3:
-           return '<span class="label label-primary">文件</span>'
+           return '<span class="label label-primary">图片</span>'
         elif f['category'] == 4:
            return '<span class="label label-info">文档</span>'
         elif f['category'] == 5:
@@ -24,14 +24,14 @@ $code:
         elif f['category'] == 6 and f['isdir'] == 1:
            return '<span class="label label-danger">文件夹</span>'
         elif f['category'] == 6 and f['isdir'] == 0:
-           return '<span class="label label-success">压缩文件</span>'
+           return '<span class="label label-success">文件</span>'
         elif f['category'] == 7:
            return '<span class="label label-warning">种子</span>'
 
     def gen_download_url(f):
         pcsobj = data['pcsobj']
         if f['isdir'] == 1:
-            return '<a href="/file/%s" class="button">%s</a>' % ((f['server_filename']+u'/', f['server_filename']))
+            return '<a href="/file%s" class="button">%s</a>' % ((f['path']+u'/', f['server_filename']))
         else:
             return '<a href="#download_url" class="button url_link" path="%s">%s</a>' % (f['path'], f['server_filename'])
 
