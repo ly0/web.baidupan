@@ -179,7 +179,10 @@ $code:
                 </tr>
             $for entry in pcs:
                 <tr>
-                  <td>$:gen_download_url(entry)</td>
+                  <td>$:gen_download_url(entry)
+                  $if entry['category'] == 1:
+                      <a href="/stream/$entry['path']?type=M3U8_AUTO_240" class="button" target="_blank"><span class="label label-default">240P</span></a>&nbsp;<a href="/stream/$entry['path']?type=M3U8_AUTO_480" class="button" target="_blank"><span class="label label-info">480P</span></a>&nbsp;<a href="/stream/$entry['path']?type=M3U8_AUTO_720" class="button" target="_blank"><span class="label label-danger">720P</span></a>
+                  </td>
                   <td>$:filetype(entry)</td>
                   $if entry['isdir'] == 0:
                       <td>$round(((1.0*entry['size'])/(1024*1024)), 3) MB</td>
