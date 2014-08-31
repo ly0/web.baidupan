@@ -47,7 +47,8 @@ class File:
                 'quota': json.loads(pcs.quota().content),
                 'pcsobj': pcs,
                 'modules': {'time': time,
-                            'round': round}
+                            'round': round,
+                            'web.ctx': web.ctx}
                 }
         return render.list_files(data=data)
 
