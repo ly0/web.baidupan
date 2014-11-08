@@ -3,10 +3,8 @@ import json
 import os
 import web
 import time
+import urllib2
 from baidupcsapi import *
-
-# urls support regular expression
-# request will be sent with arguments of re's groups
 
 urls = (
     '/', 'Index',
@@ -16,8 +14,25 @@ urls = (
     '/lx', 'Lixian'
 )
 
-pcs = PCS('', '')
+# source: baidupcsapi repo Issue 3 on github
+def upload_img42(img):
+    url = 'http://img42.com'
+    req = urllib2.Request(url, data=img)
+    msg = urllib2.urlopen(req).read()
+    return '%s/%s' % (url, json.loads(msg)['id'])
 
+def captcha(jpeg):
+    print '* captcha needed'
+    print 'captcha url:', upload_img42(jpeg)
+    foo = raw_input('captcha >')
+    return foo
+
+# edited
+pcs = PCS('', '', captcha_callback=captcha)
+
+# user-defined prefix of baidupcs CDN node
+# comment next line if you want to keep origin url that server returns
+PRIOR_NODE = 'nb' 
 
 def self_round(n, d):
     return round(n, d)
@@ -65,7 +80,12 @@ class Resource:
 class Download:
     def GET(self, *args):
         path = '/' + '/'.join(args)
-        return web.redirect(pcs.download_url(path)[0])
+        # user-defined baidupcs CDN node
+        if 'PRIOR_NODE' in globals():
+            return re.sub('http://(.*?)\.baidupcs\.com', 'http://' + PRIOR_NODE + '.baidupcs.com', pcs.download_url(path)[0])
+        else:
+            return pcs.download_url(path)[0]
+
 
 
 class Lixian:
