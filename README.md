@@ -1,6 +1,8 @@
 web.baidupan
 ============
 
+最新版请切换到 dev 分支
+
 纯属娱乐, 代码丑陋功能简略, javascript什么的毛也不会, 离线任务懒得弄了, 可以把模板复制粘贴一份调用*baidupcsapi*的接口就好.
 
 TODOLIST
