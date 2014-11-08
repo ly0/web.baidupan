@@ -7,6 +7,7 @@ $code:
     ctx = data['modules']['web.ctx']
 
     pcs = data['pcs']
+    lib_json = data['modules']['lib_json']
     quota = data['quota']
     quota_ratio = (1.0*quota['used'])/quota['total']
 
@@ -16,7 +17,7 @@ $code:
         elif f['category'] == 2:
            return '<span class="label label-default">音频</span>'
         elif f['category'] == 3:
-           return '<span class="label label-primary">图片</span>'
+           return '<span class="label label-primary">文件</span>'
         elif f['category'] == 4:
            return '<span class="label label-info">文档</span>'
         elif f['category'] == 5:
@@ -24,14 +25,14 @@ $code:
         elif f['category'] == 6 and f['isdir'] == 1:
            return '<span class="label label-danger">文件夹</span>'
         elif f['category'] == 6 and f['isdir'] == 0:
-           return '<span class="label label-success">文件</span>'
+           return '<span class="label label-success">压缩文件</span>'
         elif f['category'] == 7:
            return '<span class="label label-warning">种子</span>'
 
     def gen_download_url(f):
         pcsobj = data['pcsobj']
         if f['isdir'] == 1:
-            return '<a href="/file%s" class="button">%s</a>' % ((f['path']+u'/', f['server_filename']))
+            return '<a href="/file/%s" class="button">%s</a>' % ((f['server_filename']+u'/', f['server_filename']))
         else:
             return '<a href="#download_url" class="button url_link" path="%s">%s</a>' % (f['path'], f['server_filename'])
 
@@ -132,7 +133,7 @@ $code:
     <div class="container">
           <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active"><a href="#">网盘</a></li>
-            <li role="presentation"><a href="#">离线下载</a></li>
+            <li role="presentation"><a href="#lx" class="lx-button">离线下载</a></li>
             <li role="presentation"><a data-toggle="modal" href="#about" data-target="#about">关于</a></li>
           </ul>
 
@@ -179,10 +180,7 @@ $code:
                 </tr>
             $for entry in pcs:
                 <tr>
-                  <td>$:gen_download_url(entry)
-                  $if entry['category'] == 1:
-                      <a href="/stream/$entry['path']?type=M3U8_AUTO_240" class="button" target="_blank"><span class="label label-default">240P</span></a>&nbsp;<a href="/stream/$entry['path']?type=M3U8_AUTO_480" class="button" target="_blank"><span class="label label-info">480P</span></a>&nbsp;<a href="/stream/$entry['path']?type=M3U8_AUTO_720" class="button" target="_blank"><span class="label label-danger">720P</span></a>
-                  </td>
+                  <td>$:gen_download_url(entry)</td>
                   <td>$:filetype(entry)</td>
                   $if entry['isdir'] == 0:
                       <td>$round(((1.0*entry['size'])/(1024*1024)), 3) MB</td>
@@ -208,6 +206,38 @@ $code:
                 <p>使用到的库:</p>
                     <a href="http://github.com/ly0/baidupcsapi" class="button">baidupcsapi</a> <br>   
                     <a href="http://www.webpy.org" class="button">web.py</a> <br>       
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="lx" class="modal fade in" aria-hidden="false" style="display: none; ">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <a class="close" data-dismiss="modal">×</a>
+                <h3>离线下载</h3>
+                </div>
+
+                <div class="modal-body">
+                    <div class="input-group">
+                    <span class="input-group-addon">下载链接</span>
+                    <input type="text" class="form-control">
+                    <span class="input-group-btn">
+                        <button class="btn btn-info" type="button">提交</button>
+                    </span>
+                    </div>
+                    <!-- Table -->
+                    <p id="lx-notget">正在获取</p>
+                    <table class="table" id="lx-table" style="display: none; ">
+                        <tr>
+                            <td>#</td>
+                            <td>文件名</td>
+                            <td>下载</td>
+                        </tr>
+                    </table>    
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</a>
@@ -261,6 +291,39 @@ $code:
     $$('#url_close').click(function()
     {
       $$("#download_url").attr("style", "display: none;");
+    })
+
+    function get_lx()
+    {
+        $$("#lx-notget").attr("style", "");
+        $$("#lx").attr("style", "display: none;");
+        $$("#lx-notget").html("正在获取, 请稍后.");
+        $$.ajax(
+          {
+            url: "/lx",
+            type: "GET",
+            success: function(json) {
+              json=eval("("+json+")");
+              $$.each(json, function(i, item) {
+                  $$("#lx-table").append("<tr><td>" + i +"</td><td>" + item['task_name'] +"</td><td>" +
+                    "<button class='btn btn-success' type='button' url='" + "test" +"'>下载</button>" +
+                    "</td></tr>");
+
+              });
+              $$("#lx-notget").attr("style", "display: none;");
+              $$("#lx-table").attr("style", "");
+            },
+            error: function(ajax) {
+              $$("#lx-notget").html("获取失败,请重试");
+            }
+          });
+
+        $$("#lx").attr("style", "display: block;");
+
+    }
+    $$(".lx-button").click(function()
+    {
+      get_lx();
     })
     </script>
   </body>
