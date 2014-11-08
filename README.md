@@ -1,11 +1,12 @@
 web.baidupan
 ============
 
-#### dev版 update log
+#### dev-changelog
 
-新加入离线下载
+1. 离线下载
 
-![image](https://raw.githubusercontent.com/ly0/web.baidupan/dev/lx.png)
+   ![image](https://raw.githubusercontent.com/ly0/web.baidupan/dev/lx.png)
+2. 验证码函数上传至 img42, 并且返回 url 让用户在外部打开。（下一个版本会更改成在页面上输入）
 
 纯属娱乐, 代码丑陋功能简略, javascript什么的毛也不会, 离线任务懒得弄了, 可以把模板复制粘贴一份调用*baidupcsapi*的接口就好.
 
