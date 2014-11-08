@@ -1,6 +1,11 @@
 web.baidupan
 ============
 
+dev版 updatelog
+============
+新加入离线下载
+![image](https://raw.githubusercontent.com/ly0/web.baidupan/dev/lx.png)
+
 纯属娱乐, 代码丑陋功能简略, javascript什么的毛也不会, 离线任务懒得弄了, 可以把模板复制粘贴一份调用*baidupcsapi*的接口就好.
 
 TODOLIST
@@ -21,7 +26,6 @@ TODOLIST
 截图:
 ![image](https://raw.githubusercontent.com/ly0/web.baidupan/master/screenshot.png)
 
-![image](https://raw.githubusercontent.com/ly0/web.baidupan/dev/lx.png)
 
 运行:<br>
 `python launcher.py`
