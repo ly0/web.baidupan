@@ -6,8 +6,8 @@ web.baidupan
 TODOLIST
 ------------
 - [ ] 在需要输入验证码的时候由访问者输入
-- [ ] 获得离线下载资源
-- [ ] 在线提交离线下载
+- [X] 获得离线下载资源
+- [X] 在线提交离线下载
 - [ ] 保存指定的百度盘分享链接到本盘
 - [ ] 分享指定文件(列表)和文件夹
 - [ ] 自动识别百度的验证码
@@ -20,6 +20,7 @@ TODOLIST
 
 截图:
 ![image](https://raw.githubusercontent.com/ly0/web.baidupan/master/screenshot.png)
+![image](https://raw.githubusercontent.com/ly0/web.baidupan/dev/lx.png)
 
 运行:<br>
 `python launcher.py`
