@@ -3,6 +3,7 @@ import json
 import os
 import web
 import time
+import re
 import urllib2
 from baidupcsapi import *
 
