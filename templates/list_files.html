@@ -224,7 +224,7 @@ $code:
                 <div class="modal-body">
                     <div class="input-group">
                     <span class="input-group-addon">下载链接</span>
-                    <input type="text" class="form-control">
+                    <input type="text" class="form-control" id="lx-url-input">
                     <span class="input-group-btn">
                         <button class="btn btn-info" type="button">提交</button>
                     </span>
@@ -240,7 +240,7 @@ $code:
                     </table>    
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</a>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="lx-close">Close</a>
                 </div>
             </div>
         </div>
@@ -273,6 +273,7 @@ $code:
           {
             url: "/download/" + path + "/",
             type: "GET",
+            async:false,
             success: function(ajax) {
               $$("#file_url").html(ajax);
             },
@@ -282,6 +283,39 @@ $code:
           });
 
         $$("#download_url").attr("style", "display: block;");
+
+    }
+       
+    function get_lx_url(id)
+    {
+        $$("#lx-url-input").attr("value", "正在获取, 请稍后...");
+        $$.ajax(
+          {
+            url: "/lx/" + id,
+            type: "GET",
+            async:false, //同步模式
+            success: function(ajax) {
+                lx_data = eval("(" + ajax + ")");
+                for(var item in lx_data.task_info)
+                {
+                    var lx_info = lx_data.task_info[item];
+                    var file_list = lx_info.file_list;
+                    var path = lx_info.save_path + file_list[0]['file_name'];
+                    if (file_list.length > 1)
+                    {
+                        alert("该任务不是单文件任务, 现在跳转到保存该任务的文件夹下");
+                        alert("有任务数" + path.length);
+                        window.location.replace("/file" + lx_info.save_path);
+                        return;
+                    }
+                    get_real_url(path);
+                }
+                return ajax
+            },
+            error: function(ajax) {
+              alert("获取失败,请重试");
+            }
+          });
 
     }
     $$(".url_link").click(function()
@@ -306,12 +340,16 @@ $code:
               json=eval("("+json+")");
               $$.each(json, function(i, item) {
                   $$("#lx-table").append("<tr><td>" + i +"</td><td>" + item['task_name'] +"</td><td>" +
-                    "<button class='btn btn-success' type='button' url='" + "test" +"'>下载</button>" +
+                    "<button class='btn btn-success lx-download-btn' type='button' lxid='" + item["task_id"] +"'>下载</button>" +
                     "</td></tr>");
 
               });
               $$("#lx-notget").attr("style", "display: none;");
               $$("#lx-table").attr("style", "");
+                $$('#lx-table button').click(function()
+                                             {
+                    get_lx_url($$(this).attr("lxid"));
+                })
             },
             error: function(ajax) {
               $$("#lx-notget").html("获取失败,请重试");
@@ -325,6 +363,11 @@ $code:
     {
       get_lx();
     })
+    $$('#lx-close').click(function()
+    {
+      $$("#lx").attr("style", "display: none;");
+    })
+
     </script>
   </body>
 </html>
