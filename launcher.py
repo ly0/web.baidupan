@@ -11,7 +11,8 @@ urls = (
     '/static/(.*)', 'Resource',
     '/download/(.*)', 'Download',
     '/file/(.*)', 'File',
-    '/lx', 'Lixian'
+    '/lx', 'Lixian',
+    '/lx/(\d+)', 'LixianDownload'
 )
 
 # source: baidupcsapi repo Issue 3 on github
@@ -88,6 +89,13 @@ class Download:
         else:
             return pcs.download_url(path)[0]
 
+class LixianDownload:
+    def GET(self, *args):
+        try:
+            download_id = args[0]
+        except:
+            return web.notfound('Lixian task not found')
+        return pcs.query_download_tasks([download_id]).content
 
 
 class Lixian:
