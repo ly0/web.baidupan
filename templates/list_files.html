@@ -32,7 +32,7 @@ $code:
     def gen_download_url(f):
         pcsobj = data['pcsobj']
         if f['isdir'] == 1:
-            return '<a href="/file/%s" class="button">%s</a>' % ((f['server_filename']+u'/', f['server_filename']))
+            return '<a href="/file%s" class="button">%s</a>' % ((f['path']+u'/', f['server_filename']))
         else:
             return '<a href="#download_url" class="button url_link" path="%s">%s</a>' % (f['path'], f['server_filename'])
 
