@@ -85,10 +85,11 @@ class Download:
     def GET(self, *args):
         path = '/' + '/'.join(args)
         # user-defined baidupcs CDN node
-        if 'PRIOR_NODE' in globals():
-            return re.sub('http://(.*?)\.baidupcs\.com', 'http://' + PRIOR_NODE + '.baidupcs.com', pcs.download_url(path)[0])
+        download_url = pcs.download_url(path)[0]
+        if 'PRIOR_NODE' in globals() and 'cdn.baidupcs.com' not in download_url :
+            return re.sub('http://(.*?)\.baidupcs\.com', 'http://' + PRIOR_NODE + '.baidupcs.com', download_url)
         else:
-            return pcs.download_url(path)[0]
+            return download_url
 
 class LixianDownload:
     def GET(self, *args):
