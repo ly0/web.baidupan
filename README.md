@@ -1,7 +1,11 @@
 web.baidupan
 ============
 
-这是一个连接 `aria2-RPC` 的版本，README一直忘了更新，然后不知道该写什么了，有什么问题请直接邮件我或者发 issue 吧，有发必回。
+这是一个连接 `aria2-RPC` 的版本
+
+第一次使用请先修改 launcher.py 里 `pcs = PCS('username', 'password')` 成你自己的用户名和密码
+
+并且修改`ARIA2RPC`为服务器能访问到的`RPC`地址（暂时这样，正常情况应该由前端提交而不是后台）
 
 运行:<br>
 `python launcher.py`
