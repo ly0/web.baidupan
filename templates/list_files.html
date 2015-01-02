@@ -271,7 +271,7 @@ $code:
         $$("#file_url").html("正在获取, 请稍后.");
         $$.ajax(
           {
-            url: "/download/" + path + "/",
+            url: "/download/" + path,
             type: "GET",
             async:false,
             success: function(ajax) {
@@ -300,7 +300,7 @@ $code:
                 {
                     var lx_info = lx_data.task_info[item];
                     var file_list = lx_info.file_list;
-                    var path = lx_info.save_path + file_list[0]['file_name'];
+                    var path = lx_info.save_path;
                     if (file_list.length > 1)
                     {
                         alert("该任务不是单文件任务, 现在跳转到保存该任务的文件夹下");
