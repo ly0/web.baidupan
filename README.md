@@ -1,6 +1,8 @@
 web.baidupan
 ============
 
+第一次使用请先修改 launcher.py 里 `pcs = PCS('username', 'password')` 成你自己的用户名和密码
+
 #### dev-changelog
 
 1. 离线下载
