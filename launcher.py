@@ -5,6 +5,7 @@ import web
 import time
 import re
 import urllib2
+import getpass
 from baidupcsapi import *
 
 urls = (
@@ -31,7 +32,7 @@ def captcha(jpeg):
     return foo
 
 # edited
-pcs = PCS('', '', captcha_callback=captcha)
+# pcs = PCS('', '', captcha_callback=captcha)
 
 # user-defined prefix of baidupcs CDN node
 # comment next line if you want to keep origin url that server returns
@@ -130,5 +131,9 @@ class Stream:
         return content
 
 if __name__ == "__main__":
+    username = raw_input("username:")
+    password = getpass.getpass("Password:")
+    pcs = PCS(username, password, captcha_callback=captcha)
+
     app = web.application(urls, globals())
     app.run()
