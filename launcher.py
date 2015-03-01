@@ -13,7 +13,8 @@ urls = (
     '/download/(.*)', 'Download',
     '/file/(.*)', 'File',
     '/lx', 'Lixian',
-    '/lx/(\d+)', 'LixianDownload'
+    '/lx/(\d+)', 'LixianDownload',
+    '/stream/(.*)', 'Stream'
 )
 
 # source: baidupcsapi repo Issue 3 on github
@@ -107,6 +108,26 @@ class Lixian:
 
     def POST(self, *args):
         return 'POST'
+
+class Stream:
+    def GET(self, *args):
+        path = '/' + '/'.join(args)
+        if 'type' in web.input():
+            stype = web.input()['type']
+        else:
+            stype = 'M3U8_AUTO_480'
+        content = pcs.get_streaming(path=path, stype=stype)
+        if isinstance(content, int):
+            web.ctx.status = '400 Bad Request'
+            if content == 31066:
+                return 'file is not existed.'
+            elif content == 31304:
+                return 'file type is not supported.'
+            elif content == 31023:
+                return 'param error.'
+            else:
+                return 'unknown error.'
+        return content
 
 if __name__ == "__main__":
     app = web.application(urls, globals())
